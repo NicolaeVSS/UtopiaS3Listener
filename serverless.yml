@@ -6,14 +6,31 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        - "*"
 
 functions:
   app:
     handler: src/index.handler
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+      
+      - s3:
+          bucket: utopia-admin-bucket-846753
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .csv
 
 plugins:
   - serverless-offline
