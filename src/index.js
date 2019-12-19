@@ -19,18 +19,11 @@ module.exports.handler = async (event, context) => {
   const objectkey = event.Records[0].s3.object.key;
 
   const myfile = s3.getObject({Bucket: bucketName, Key: objectkey}).createReadStream();
-  // .then(resolve => {
-  //   return fs.createReadStream(resolve.body);
-  // })
   
   await csv().fromStream(myfile).subscribe((json) => {
     console.log(json)
   })
 
-  // console.log("bucketName: " + bucketName + "\tobjectKey: " + objectkey)
   // console.log("Reading options from event:\n", util.inspect(event, {depth: 5}));
-  // let buckets = await s3.listBuckets().promise();
-  // let stuff = await s3.getObject
-  // console.log(buckets);
   return new Response(204);
 }
