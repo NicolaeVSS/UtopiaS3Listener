@@ -1,9 +1,8 @@
 const serverless = require('serverless-http');
-const aws = require('aws-sdk'); // get reference to S3 client
+const aws = require('aws-sdk');
 const util = require('util');
 const s3 = new aws.S3();
 const csv = require('csvtojson');
-const fs = require('fs');
 
 class Response{
   constructor(statusCode, body){
@@ -42,7 +41,8 @@ module.exports.handler = async (event, context) => {
       console.log("flight POST")
       break;
     default:
-      return;
+      console.log("FAILED TO IDENTIFY CSV")
+      break;
   };
 
   console.log(entities);
