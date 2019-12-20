@@ -17,12 +17,30 @@ class Response{
 module.exports.handler = async (event, context) => {
   const bucketName = event.Records[0].s3.bucket.name;
   const objectkey = event.Records[0].s3.object.key;
-
+  // get the entity type, the object key should be formatted [entity].csv i.e. "airport.csv"
+  const entityType = objectkey.split(".")[0];
+  const entities = [];
   const myfile = s3.getObject({Bucket: bucketName, Key: objectkey}).createReadStream();
-  
+
   await csv().fromStream(myfile).subscribe((json) => {
-    console.log(json)
-  })
+    entities.push(json);
+  });
+
+  switch (entityType){
+    case "airport":
+      console.log("airport POST")
+      break;
+    case "flightPath":
+      console.log("flightPath POST")
+      break;
+    case "flight":
+      console.log("flight POST")
+      break;
+    default:
+      return;
+  };
+
+  console.log(entities);
 
   // console.log("Reading options from event:\n", util.inspect(event, {depth: 5}));
   return new Response(204);
